@@ -25,7 +25,7 @@ OU
 users(id, lastName, firstName, email, phoneNumber, role_id)
 roles(id, name)
 payments(id, total, date, status, currency, user_id)
-contracts(id, date, content, listing_id, contractor_user_id, client_user_id)
+contracts(id, date, content, ad_id, contractor_user_id, client_user_id)
 ```
 
 **MPD (Modèle Physique de Données)**
@@ -78,7 +78,7 @@ CREATE TABLE contracts (
     id SERIAL PRIMARY KEY,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     content TEXT,
-    listing_id TEXT,
+    ad_id TEXT,
     contractor_user_id INTEGER NOT NULL,
     client_user_id INTEGER NOT NULL,
     CONSTRAINT fk_contracts_contractor FOREIGN KEY (contractor_user_id)
