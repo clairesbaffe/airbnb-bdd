@@ -10,6 +10,7 @@ const {
   insertCommentDto,
   updateCommentDto,
 } = require("../DTO/requests/comment.dto");
+const { updateAdRating } = require("../services/ads.service");
 
 const get_all_comments_by_ad_id = async (req, res) => {
   try {
@@ -42,7 +43,10 @@ const insert_comment = async (req, res) => {
     const insertedId = await insertComment(commentData);
     const comment = await getCommentById(insertedId);
 
+    await updateAdRating(commentData.adId, comment.rating);
+
     const data = commentDto(comment);
+
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -58,6 +62,8 @@ const update_comment = async (req, res) => {
     await updateComment(commentId, commentData);
     const comment = await getCommentById(commentId);
 
+    // TODO: update ad rating
+
     const data = commentDto(comment);
     res.status(200).json(data);
   } catch (error) {
@@ -70,6 +76,9 @@ const delete_comment_by_id = async (req, res) => {
   try {
     const commentId = req.params.commentId;
     await deleteCommentById(commentId);
+
+    // TODO: update ad rating
+
     res.status(200).json();
   } catch (error) {
     console.error(error);

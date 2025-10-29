@@ -10,6 +10,7 @@ const {
   insertRatingDto,
   updateRatingDto,
 } = require("../DTO/requests/rating.dto");
+const { updateAdRating } = require("../services/ads.service");
 
 const get_all_ratings_by_ad_id = async (req, res) => {
   try {
@@ -42,6 +43,8 @@ const insert_rating = async (req, res) => {
     const insertedId = await insertRating(ratingData);
     const rating = await getRatingById(insertedId);
 
+    await updateAdRating(ratingData.adId, rating.rating);
+
     const data = ratingDto(rating);
     res.status(200).json(data);
   } catch (error) {
@@ -58,6 +61,8 @@ const update_rating = async (req, res) => {
     await updateRating(ratingId, ratingData);
     const rating = await getRatingById(ratingId);
 
+    // TODO: update ad rating
+
     const data = ratingDto(rating);
     res.status(200).json(data);
   } catch (error) {
@@ -70,6 +75,9 @@ const delete_rating_by_id = async (req, res) => {
   try {
     const ratingId = req.params.ratingId;
     await deleteRatingById(ratingId);
+
+    // TODO: update ad rating
+
     res.status(200).json();
   } catch (error) {
     console.error(error);

@@ -39,14 +39,12 @@ const insertAd = async (adData) => {
     await client.connect();
     const db = client.db(dbName);
 
-    const result = await db
-      .collection("ads")
-      .insertOne({
-        ...adData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        rating: { average: null, count: 0 },
-      });
+    const result = await db.collection("ads").insertOne({
+      ...adData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      rating: { average: null, count: 0 },
+    });
 
     return result.insertedId;
   } finally {
@@ -83,10 +81,42 @@ const deleteAdById = async (adId) => {
   }
 };
 
+const updateAdRating = async (adId, newRating) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    const ad = await getAdById(adId);
+
+    let adAverageRating = ad.rating.average;
+    let adRatingCount = ad.rating.count;
+
+    adAverageRating =
+      Math.round(
+        ((adAverageRating * adRatingCount + newRating) / (adRatingCount + 1)) *
+          100
+      ) / 100;
+    adRatingCount++;
+
+    await db.collection("ads").updateOne(
+      { _id: new ObjectId(adId) },
+      {
+        $set: {
+          rating: { average: adAverageRating, count: adRatingCount },
+        },
+      }
+    );
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   getAllAds,
   getAdById,
   insertAd,
   updateAd,
   deleteAdById,
+  updateAdRating,
 };
