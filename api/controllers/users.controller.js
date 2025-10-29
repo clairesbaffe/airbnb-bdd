@@ -3,7 +3,8 @@ const {
     getOneUser,
     postUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserRole
  } = require("../services/users.service");
 const {userDto} = require("../DTO/response/user.dto");
 const {getOneRole} = require("../services/roles.service");
@@ -75,6 +76,22 @@ const update_user = async (req, res) => {
 };
 
 
+const update_user_role = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.user_id);
+    const role_id = parseInt(req.params.role_id);
+    const updatedUser = await updateUserRole(role_id, user_id)
+    const user = await getOneUser(updatedUser.id);
+    const role = await getOneRole(user.role_id);
+    const data = userDto(user, role);
+    res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
 const delete_user = async (req, res) => {
   try {
     const user_id = parseInt(req.params.user_id);
@@ -91,5 +108,6 @@ module.exports = {
   get_one_user,
   post_one_user,
   update_user,
-  delete_user
+  delete_user,
+  update_user_role
 };
