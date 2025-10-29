@@ -4,9 +4,14 @@ const {
     postUser,
     updateUser,
     deleteUser,
-    updateUserRole
+    updateUserRole,
+    getTopUsersContracts,
+    getTopUsersClients
  } = require("../services/users.service");
-const {userDto} = require("../DTO/response/user.dto");
+const {
+    userDto,
+    userCountContractDto
+} = require("../DTO/response/user.dto");
 const {getOneRole} = require("../services/roles.service");
 const{
     createUserDto,
@@ -103,11 +108,52 @@ const delete_user = async (req, res) => {
   }
 };
 
+
+const get_top_users_contract = async (req, res) => {
+  try {
+    const limit = parseInt(req.params.limit);
+    const users = await getTopUsersContracts(limit);
+    const data = [];
+    for (const user of users) {
+        const role = await getOneRole(user.role_id);
+        data.push(
+            userCountContractDto(user, role)
+        )
+    }
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
+const get_top_users_client = async (req, res) => {
+  try {
+    const limit = parseInt(req.params.limit);
+    const users = await getTopUsersClients(limit);
+    const data = [];
+    for (const user of users) {
+        const role = await getOneRole(user.role_id);
+        data.push(
+            userCountContractDto(user, role)
+        )
+    }
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
 module.exports = {
   get_all_users,
   get_one_user,
   post_one_user,
   update_user,
   delete_user,
-  update_user_role
+  update_user_role,
+  get_top_users_contract,
+  get_top_users_client
 };

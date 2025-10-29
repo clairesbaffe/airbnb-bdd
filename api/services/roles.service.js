@@ -48,10 +48,25 @@ const deleteRole = async (role_id) => {
     }
 }
 
+const getNumberUsersByRole = async () => {
+  return await db.any(`
+    SELECT
+      r.id AS role_id,
+      r.name AS role_name,
+      COUNT(u.id) AS user_count
+    FROM roles r
+    LEFT JOIN users u ON u.role_id = r.id
+    GROUP BY r.id, r.name
+    ORDER BY r.id ASC;
+  `);
+};
+
+
 module.exports = {
     getAllRoles,
     getOneRole,
     postRole,
     updateRole,
-    deleteRole
+    deleteRole,
+    getNumberUsersByRole
 }

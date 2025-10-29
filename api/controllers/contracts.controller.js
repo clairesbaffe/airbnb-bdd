@@ -6,6 +6,7 @@ const {
     deleteContract
  } = require("../services/contracts.service");
 const {getOneUser} = require("../services/users.service");
+const {getOneRole} = require("../services/roles.service");
 const {requestContractDto} = require("../DTO/requests/contracts.dto");
 const { contractDto } = require("../DTO/response/contract.dto");
 
@@ -19,8 +20,10 @@ const get_all_contracts = async (req, res) => {
     for (const contract of contracts) {
         const contractor = await getOneUser(contract.contractor_user_id);
         const client = await getOneUser(contract.client_user_id);
+        const contractor_role = await getOneRole(contractor.role_id);
+        const client_role = await getOneRole(client.role_id);
         data.push(
-            contractDto(contract, contractor, client)
+            contractDto(contract, contractor, client, contractor_role, client_role)
         )
     };
 
@@ -39,7 +42,9 @@ const get_one_contract = async (req, res) => {
     const contract = await getOneContract(contract_id);
     const contractor = await getOneUser(contract.contractor_user_id);
     const client = await getOneUser(contract.client_user_id);
-    const data = contractDto(contract, contractor, client);
+    const contractor_role = await getOneRole(contractor.role_id);
+    const client_role = await getOneRole(client.role_id);
+    const data = contractDto(contract, contractor, client, contractor_role, client_role);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -55,7 +60,9 @@ const post_one_contract = async (req, res) => {
     const contract = await getOneContract(newContract.id);
     const contractor = await getOneUser(newContract.contractor_user_id);
     const client = await getOneUser(newContract.client_user_id);
-    const data = contractDto(contract, contractor, client);
+    const contractor_role = await getOneRole(contractor.role_id);
+    const client_role = await getOneRole(client.role_id);
+    const data = contractDto(contract, contractor, client, contractor_role, client_role);
     res.status(201).json(data);
   } catch (error) {
     console.error(error);
@@ -72,7 +79,9 @@ const update_contract = async (req, res) => {
     const contract = await getOneContract(updatedContract.id);
     const contractor = await getOneUser(contract.contractor_user_id);
     const client = await getOneUser(contract.client_user_id);
-    const data = contractDto(contract, contractor, client);
+    const contractor_role = await getOneRole(contractor.role_id);
+    const client_role = await getOneRole(client.role_id);
+    const data = contractDto(contract, contractor, client, contractor_role, client_role);
     res.status(201).json(data);
   } catch (error) {
     console.error(error);
