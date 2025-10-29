@@ -65,9 +65,22 @@ const updateRating = async (ratingId, ratingData) => {
   }
 };
 
+const deleteRatingById = async (ratingId) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    await db.collection("ratings").deleteOne({ _id: new ObjectId(ratingId) });
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   getAllRatings,
   getRatingById,
   insertRating,
   updateRating,
+  deleteRatingById,
 };
