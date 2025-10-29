@@ -1,5 +1,5 @@
 const {
-  getAllComments,
+  getAllCommentsByAdId,
   getCommentById,
   insertComment,
   updateComment,
@@ -11,9 +11,10 @@ const {
   updateCommentDto,
 } = require("../DTO/requests/comment.dto");
 
-const get_all_comments = async (req, res) => {
+const get_all_comments_by_ad_id = async (req, res) => {
   try {
-    const comments = await getAllComments();
+    const adId = req.params.adId;
+    const comments = await getAllCommentsByAdId(adId);
     const data = commentsDto(comments);
     res.status(200).json(data);
   } catch (error) {
@@ -77,7 +78,7 @@ const delete_comment_by_id = async (req, res) => {
 };
 
 module.exports = {
-  get_all_comments,
+  get_all_comments_by_ad_id,
   get_comment_by_id,
   insert_comment,
   update_comment,

@@ -5,13 +5,16 @@ const {
   ObjectId,
 } = require("../database/mongo");
 
-const getAllComments = async () => {
+const getAllCommentsByAdId = async (adId) => {
   const client = new MongoClient(mongoUri);
   try {
     await client.connect();
     const db = client.db(dbName);
 
-    const comments = await db.collection("comments").find().toArray();
+    const comments = await db
+      .collection("comments")
+      .find({ adId: new ObjectId(adId) })
+      .toArray();
 
     return comments;
   } finally {
@@ -81,7 +84,7 @@ const deleteCommentById = async (commentId) => {
 };
 
 module.exports = {
-  getAllComments,
+  getAllCommentsByAdId,
   getCommentById,
   insertComment,
   updateComment,
