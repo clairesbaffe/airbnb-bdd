@@ -6,6 +6,7 @@ const {
   deleteAdById,
   addOffer,
   removeOffer,
+  searchAds,
 } = require("../services/ads.service");
 const { adsDto, adDto } = require("../DTO/response/ad.dto");
 const { insertAdDto, updateAdDto } = require("../DTO/requests/ad.dto");
@@ -13,6 +14,23 @@ const { insertAdDto, updateAdDto } = require("../DTO/requests/ad.dto");
 const get_all_ads = async (req, res) => {
   try {
     const ads = await getAllAds();
+    const data = adsDto(ads);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+const search_ads = async (req, res) => {
+  try {
+    const offersCriteria = req.query.offersCriteria;
+    const maxPrice = req.query.maxPrice;
+
+    const ads = await searchAds(
+      offersCriteria ? offersCriteria.split(",") : null,
+      maxPrice
+    );
     const data = adsDto(ads);
     res.status(200).json(data);
   } catch (error) {
@@ -111,4 +129,5 @@ module.exports = {
   delete_ad_by_id,
   add_offer,
   remove_offer,
+  search_ads,
 };
