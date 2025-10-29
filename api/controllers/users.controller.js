@@ -9,7 +9,8 @@ const {
     userDto
 } = require("../DTO/response/user.dto");
 const{
-    createUserDto
+    createUserDto,
+    updateUserDto
 } = require("../DTO/requests/user.dto");
 
 const get_all_users = async (req, res) => {
@@ -53,9 +54,11 @@ const post_one_user = async (req, res) => {
 
 const update_user = async (req, res) => {
   try {
-    const userData = createUserDto(req.body);
-    const newUser = await postUser(userData)
-    const user = await getOneUser(newUser.id);
+    const user_id = parseInt(req.params.user_id);
+    console.log(user_id)
+    const userData = updateUserDto(req.body);
+    const updatedUser = await updateUser(userData, user_id)
+    const user = await getOneUser(updatedUser.id);
     const data = userDto(user);
     res.status(201).json(data);
   } catch (error) {
@@ -67,5 +70,6 @@ const update_user = async (req, res) => {
 module.exports = {
   get_all_users,
   get_one_user,
-  post_one_user
+  post_one_user,
+  update_user
 };
