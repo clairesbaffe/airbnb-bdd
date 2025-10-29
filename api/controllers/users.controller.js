@@ -2,7 +2,8 @@ const {
     getAllUsers,
     getOneUser,
     postUser,
-    updateUser
+    updateUser,
+    deleteUser
  } = require("../services/users.service");
 const {
     usersDto,
@@ -67,9 +68,22 @@ const update_user = async (req, res) => {
   }
 };
 
+
+const delete_user = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.user_id);
+    const deletedUser = await deleteUser(user_id);
+    res.status(200).json(deletedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ error: error.message});
+  }
+};
+
 module.exports = {
   get_all_users,
   get_one_user,
   post_one_user,
-  update_user
+  update_user,
+  delete_user
 };
