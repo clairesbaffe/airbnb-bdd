@@ -1,10 +1,10 @@
 const userDto = (user) => {
   return {
     id: user.id,
-    firstName: user.first_name,
-    lastName: user.lastName,
+    first_name: user.first_name,
+    last_name: user.lastName,
     email: user.email,
-    phoneNumber: user.phone_number
+    phone_number: user.phone_number
   };
 };
 
