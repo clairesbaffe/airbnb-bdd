@@ -1,5 +1,5 @@
-
 ## Membres du groupe
+
 Nom/prénom : Saint-Marc Maimiti
 Nom/prénom : Sbaffe Claire
 
@@ -95,8 +95,70 @@ CREATE TABLE contracts (
 
 ### 3. Architecture MongoDB
 
-```json
-// Exemple de structure de vos documents
+```js
+// ========================================
+// COLLECTION: ads
+// ========================================
+db.ads.insertMany([
+  {
+    _id: ObjectId("651a1fabc9a1d9337a123456"),
+    userId: 3, // ref to PostgreSQL data
+    title: "Appartement T3 centre-ville",
+    description:
+      "Charmant T3 situé en plein cœur de Bordeaux, idéal pour les familles ou les couples.",
+    address: {
+      country: "France",
+      postcode: "33000",
+      city: "Bordeaux",
+      street: "1 rue du Truc",
+      addressSupplement: "",
+    },
+    price: 219.99,
+    currency: "EUR",
+    specifications: {
+      type: "home", // room or home
+      offers: ["wifi", "kitchen", "fridge", "washing machine", "TV"],
+      images: [
+        "https://example.com/images/appartement-t3-1.jpg",
+        "https://example.com/images/appartement-t3-2.jpg",
+        "https://example.com/images/appartement-t3-3.jpg",
+      ],
+    },
+    selfCheckin: true,
+    rating: {
+      average: 4.5,
+      count: 2,
+    },
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-16"),
+  },
+]);
+
+// ========================================
+// COLLECTION: comments
+// ========================================
+db.comments.insertMany([
+  {
+    userId: 6, // ref to PostgreSQL data
+    adId: ObjectId("651a1fabc9a1d9337a123456"),
+    comment:
+      "Super séjour à Bordeaux ! L’appartement était propre et bien situé, hôte très réactif.",
+    rating: 4.5,
+    date: new Date("2024-09-24"),
+  },
+]);
+
+// ========================================
+// COLLECTION: ratings
+// ========================================
+db.ratings.insertMany([
+  {
+    userId: 5, // ref to PostgreSQL data
+    adId: ObjectId("651a1fabc9a1d9337a123456"),
+    rating: 4.5,
+    date: new Date("2024-09-26"),
+  },
+]);
 ```
 
 ### 4. Justification des Choix Techniques
@@ -120,6 +182,7 @@ CREATE TABLE contracts (
 ```
 
 ### 6. Stratégie de Sauvegarde
+
 Pour cette partie, vous devez effectuer des recherches afin d'argumenter vos réponses.
 
 - **PostgreSQL** : Méthode proposée (pg_dump, sauvegarde continue, etc.)
