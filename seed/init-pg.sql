@@ -1,15 +1,12 @@
 -- =======================================
 -- TABLE: roles
 -- =======================================
-CREATE TABLE
-    roles (
+CREATE TABLE roles (
         id SERIAL PRIMARY KEY,
         name VARCHAR(50) NOT NULL UNIQUE
     );
 
-INSERT INTO
-    roles (name)
-VALUES
+INSERT INTO roles (name) VALUES
     ('Admin'),
     ('User'),
     ('Host'),
@@ -18,8 +15,7 @@ VALUES
 -- =======================================
 -- TABLE: users
 -- =======================================
-CREATE TABLE
-    users (
+CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         last_name VARCHAR(100) NOT NULL,
         first_name VARCHAR(100) NOT NULL,
@@ -29,8 +25,7 @@ CREATE TABLE
         CONSTRAINT fk_users_roles FOREIGN KEY (role_id) REFERENCES roles (id) ON UPDATE CASCADE ON DELETE RESTRICT
     );
 
-INSERT INTO
-    users (
+INSERT INTO users (
         last_name,
         first_name,
         email,
@@ -105,29 +100,32 @@ VALUES
 -- =======================================
 -- TABLE: payments
 -- =======================================
-CREATE TABLE
-    payments (
+CREATE TABLE payments (
         id SERIAL PRIMARY KEY,
         total NUMERIC(10, 2) NOT NULL,
         date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status VARCHAR(30) CHECK (status IN ('pending', 'completed', 'failed')),
         currency VARCHAR(10) DEFAULT 'EUR',
         user_id INTEGER NOT NULL,
-        CONSTRAINT fk_payments_users FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
+        user_paid_id INTEGER NOT NULL,
+        CONSTRAINT fk_payments_users FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT fk_payments_users_paid FOREIGN KEY (user_paid_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
-INSERT INTO
-    payments (total, status, currency, user_id)
+INSERT INTO payments (total, status, currency, user_id, user_paid_id)
 VALUES
-    (120.50, 'completed', 'EUR', 2),
-    (250.00, 'pending', 'EUR', 4),
-    (75.20, 'failed', 'EUR', 3);
+    -- Guest paye Host
+    (120.50, 'completed', 'EUR', 2, 3),
+    (250.00, 'pending', 'EUR', 4, 3),
+    (75.20, 'failed', 'EUR', 5, 8),
+    (60.00, 'completed', 'EUR', 6, 8),
+    (300.00, 'completed', 'EUR', 3, 8),
+    (180.00, 'pending', 'EUR', 8, 3);
 
 -- =======================================
 -- TABLE: contracts
 -- =======================================
-CREATE TABLE
-    contracts (
+CREATE TABLE contracts (
         id SERIAL PRIMARY KEY,
         date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         content TEXT,
@@ -138,8 +136,7 @@ CREATE TABLE
         CONSTRAINT fk_contracts_client FOREIGN KEY (client_user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT
     );
 
-INSERT INTO
-    contracts (
+INSERT INTO contracts (
         content,
         ad_id,
         contractor_user_id,

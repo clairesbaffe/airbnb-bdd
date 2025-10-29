@@ -13,7 +13,7 @@ Décrivez votre application en 3-5 phrases : problématique, objectif et fonctio
 
 **MCD (Modèle Conceptuel de Données)**
 
-![mcd](assets/mcd.png)
+![alt text](assets/mcd.png)
 
 **MLD (Modèle Logique de Données)**
 
@@ -24,8 +24,8 @@ OU
 ```
 users(id, lastName, firstName, email, phoneNumber, role_id)
 roles(id, name)
-payments(id, total, date, status, currency, user_id)
-contracts(id, date, content, ad_id, contractor_user_id, client_user_id)
+payments(id, total, date, status, currency, user_id, user_paid_id)
+contracts(id, date, content, listing_id, contractor_user_id, client_user_id)
 ```
 
 **MPD (Modèle Physique de Données)**
