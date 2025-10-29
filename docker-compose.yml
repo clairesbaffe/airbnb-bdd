@@ -3,10 +3,10 @@ version: "3.9"
 services:
   postgres:
     image: postgres:17
-    container_name: web-postgres
+    container_name: airbnb-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: dev
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: airbnb
       TZ: Europe/Paris
@@ -15,7 +15,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev -d airbnb"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d airbnb"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: web-pgadmin
+    container_name: airbnb-pgadmin
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -43,7 +43,7 @@ services:
 
   mongodb:
     image: mongo:7
-    container_name: mongodb
+    container_name: airbnb-mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -53,7 +53,7 @@ services:
       MONGO_INITDB_DATABASE: airbnb
     volumes:
       - mongodb_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./seed/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
 networks:
   dbnet:
