@@ -58,10 +58,23 @@ const deletePayment = async (payment_id) => {
 }
 
 
+const getPaymentsByCurrencies = async () => {
+    return await db.any(`SELECT
+                        currency,
+                        COUNT(id) AS nb_payments,
+                        SUM(total) AS total_amount,
+                        AVG(total) AS avg_amount
+                        FROM payments
+                        GROUP BY currency
+                        ORDER BY total_amount DESC;
+                `);
+}
+
 module.exports = {
     getAllPayments,
     getOnePayment,
     postPayment,
     updatePayment,
-    deletePayment
+    deletePayment,
+    getPaymentsByCurrencies
 };
