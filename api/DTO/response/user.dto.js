@@ -1,16 +1,17 @@
-const userDto = (user) => {
+const {roleDto} = require("./role.dto")
+
+const userDto = (user, role) => {
   return {
     id: user.id,
     first_name: user.first_name,
     last_name: user.lastName,
     email: user.email,
-    phone_number: user.phone_number
+    phone_number: user.phone_number,
+    role: roleDto(role)
   };
 };
 
-const usersDto = (users) => users.map(userDto);
 
 module.exports = {
-  userDto,
-  usersDto
+  userDto
 };
