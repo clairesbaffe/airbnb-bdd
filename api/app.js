@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
@@ -11,11 +11,13 @@ const userRouter = require("./routes/users.routes");
 const ratingRouter = require("./routes/ratings.routes");
 const roleRouter = require("./routes/roles.routes");
 const commentRouter = require("./routes/comments.routes");
+const adRouter = require("./routes/ads.routes");
 
 app.use("/users", userRouter);
 app.use("/ratings", ratingRouter);
 app.use("/roles", roleRouter);
 app.use("/comments", commentRouter);
+app.use("/ads", adRouter);
 
 app.listen(port, hostname, () => {
   console.log(`Serveur démarré sur le http://${hostname}:${port}`);
