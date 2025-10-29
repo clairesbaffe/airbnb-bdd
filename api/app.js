@@ -10,12 +10,14 @@ app.use(express.json());
 const userRouter = require("./routes/users.routes");
 const ratingRouter = require("./routes/ratings.routes");
 const roleRouter = require("./routes/roles.routes");
+const paymentRouter = require("./routes/payments.routes");
 const commentRouter = require("./routes/comments.routes");
 const adRouter = require("./routes/ads.routes");
 
 app.use("/users", userRouter);
 app.use("/ratings", ratingRouter);
 app.use("/roles", roleRouter);
+app.use("/payments", paymentRouter);
 app.use("/comments", commentRouter);
 app.use("/ads", adRouter);
 
