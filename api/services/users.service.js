@@ -19,13 +19,25 @@ const postUser = async (userData) => {
                 role_id: userData.role_id
             }
         );
+}
 
-
-
+const updateUser = async (userData, user_id) => {
+        return await db.one(
+            'UPDATE users SET last_name=${last_name}, first_name=${first_name}, email=${email}, phone_number=${phone_number}, role_id=${role_id} WHERE id=${id} RETURNING *',
+            {
+                last_name: userData.last_name,
+                first_name: userData.first_name,
+                email: userData.email,
+                phone_number: userData.phone_number,
+                role_id: userData.role_id,
+                id:user_id
+            }
+        );
 }
 
 module.exports = {
     getAllUsers,
     getOneUser,
-    postUser
+    postUser,
+    updateUser
 }

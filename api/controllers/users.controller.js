@@ -1,7 +1,8 @@
 const {
     getAllUsers,
     getOneUser,
-    postUser
+    postUser,
+    updateUser
  } = require("../services/users.service");
 const {
     usersDto,
@@ -37,6 +38,20 @@ const get_one_user = async (req, res) => {
 
 
 const post_one_user = async (req, res) => {
+  try {
+    const userData = createUserDto(req.body);
+    const newUser = await postUser(userData)
+    const user = await getOneUser(newUser.id);
+    const data = userDto(user);
+    res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
+const update_user = async (req, res) => {
   try {
     const userData = createUserDto(req.body);
     const newUser = await postUser(userData)

@@ -1,5 +1,5 @@
 const { getAllRatings } = require("../services/ratings.service");
-const { ratingsDto } = require("../DTO/rating.dto");
+const { ratingsDto } = require("../DTO/response/rating.dto");
 
 const get_all_ratings = async (req, res) => {
   try {
