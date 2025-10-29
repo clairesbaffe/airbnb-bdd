@@ -5,13 +5,16 @@ const {
   ObjectId,
 } = require("../database/mongo");
 
-const getAllRatings = async () => {
+const getAllRatingsByAdId = async (adId) => {
   const client = new MongoClient(mongoUri);
   try {
     await client.connect();
     const db = client.db(dbName);
 
-    const ratings = await db.collection("ratings").find().toArray();
+    const ratings = await db
+      .collection("ratings")
+      .find({ adId: new ObjectId(adId) })
+      .toArray();
 
     return ratings;
   } finally {
@@ -78,7 +81,7 @@ const deleteRatingById = async (ratingId) => {
 };
 
 module.exports = {
-  getAllRatings,
+  getAllRatingsByAdId,
   getRatingById,
   insertRating,
   updateRating,

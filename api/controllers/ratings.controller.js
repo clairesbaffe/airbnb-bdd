@@ -1,5 +1,5 @@
 const {
-  getAllRatings,
+  getAllRatingsByAdId,
   getRatingById,
   insertRating,
   updateRating,
@@ -11,9 +11,10 @@ const {
   updateRatingDto,
 } = require("../DTO/requests/rating.dto");
 
-const get_all_ratings = async (req, res) => {
+const get_all_ratings_by_ad_id = async (req, res) => {
   try {
-    const ratings = await getAllRatings();
+    const adId = req.params.adId;
+    const ratings = await getAllRatingsByAdId(adId);
     const data = ratingsDto(ratings);
     res.status(200).json(data);
   } catch (error) {
@@ -77,7 +78,7 @@ const delete_rating_by_id = async (req, res) => {
 };
 
 module.exports = {
-  get_all_ratings,
+  get_all_ratings_by_ad_id,
   get_rating_by_id,
   insert_rating,
   update_rating,
