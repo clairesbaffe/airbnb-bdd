@@ -2,7 +2,8 @@ const {
     getAllPayments,
     getOnePayment,
     postPayment,
-    updatePayment
+    updatePayment,
+    deletePayment
  } = require("../services/payments.service");
  const {getOneUser} = require("../services/users.service");
 
@@ -84,9 +85,21 @@ const update_payment = async (req, res) => {
 };
 
 
+const delete_payment = async (req, res) => {
+  try {
+    const payment_id = parseInt(req.params.payment_id);
+    const deletedPayment = await deletePayment(payment_id);
+    res.status(200).json(deletedPayment);
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ error: error.message});
+  }
+};
+
 module.exports = {
     get_all_payments,
     get_one_payment,
     post_one_payment,
-    update_payment
+    update_payment,
+    delete_payment
 }

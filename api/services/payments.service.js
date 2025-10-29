@@ -36,9 +36,32 @@ const updatePayment = async (paymentData, payment_id) => {
         );
 }
 
+
+const deletePayment = async (payment_id) => {
+    try {
+        const paymentToDelete = await db.oneOrNone(
+                                'SELECT * FROM payments WHERE id=${id}',
+                                {id: payment_id}
+                            );
+
+        if (!paymentToDelete) {
+            throw(new Error("The payment doesn't exist"))
+        }
+        await db.none(
+            'DELETE FROM payments WHERE id=${id}',
+            {id: payment_id}
+        );
+        return {"message": "payment deleted"}
+    } catch (e) {
+        throw e
+    }
+}
+
+
 module.exports = {
     getAllPayments,
     getOnePayment,
     postPayment,
-    updatePayment
+    updatePayment,
+    deletePayment
 };
