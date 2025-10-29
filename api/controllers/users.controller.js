@@ -56,7 +56,6 @@ const post_one_user = async (req, res) => {
 const update_user = async (req, res) => {
   try {
     const user_id = parseInt(req.params.user_id);
-    console.log(user_id)
     const userData = updateUserDto(req.body);
     const updatedUser = await updateUser(userData, user_id)
     const user = await getOneUser(updatedUser.id);
