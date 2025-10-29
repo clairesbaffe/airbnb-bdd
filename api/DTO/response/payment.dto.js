@@ -12,10 +12,7 @@ const paymentDto = (payment, user, user_paid) => {
   };
 };
 
-const paymentsDto = (payments) => {
-  return payments.map(p => paymentDto(p, p.user, p.user_paid));
-};
-
+const paymentsDto = (payments) => payments.map(paymentDto);
 
 module.exports = {
   paymentDto,
