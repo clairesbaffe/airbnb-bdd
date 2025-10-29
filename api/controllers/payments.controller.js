@@ -3,11 +3,15 @@ const {
     getOnePayment,
     postPayment,
     updatePayment,
-    deletePayment
+    deletePayment,
+    getPaymentsByCurrencies
  } = require("../services/payments.service");
  const {getOneUser} = require("../services/users.service");
-
- const {paymentDto} = require("../DTO/response/payment.dto")
+const {getOneRole} = require("../services/roles.service");
+ const {
+    paymentDto,
+    currenciesDto
+} = require("../DTO/response/payment.dto")
  const {
     createPaymentDto,
     updatePaymentDto
@@ -23,8 +27,10 @@ const get_all_payments = async (req, res) => {
     for (const payment of payments) {
         const user = await getOneUser(payment.user_id);
         const userPaid = await getOneUser(payment.user_paid_id);
+        const role = await getOneRole(user.role_id);
+        const rolePaid = await getOneRole(userPaid.role_id);
         data.push(
-            paymentDto(payment, user, userPaid)
+            paymentDto(payment, user, userPaid, role, rolePaid)
         )
     };
 
@@ -43,7 +49,9 @@ const get_one_payment = async (req, res) => {
     const payment = await getOnePayment(payment_id);
     const user = await getOneUser(payment.user_id);
     const userPaid = await getOneUser(payment.user_paid_id);
-    const data = paymentDto(payment, user, userPaid);
+    const role = await getOneRole(user.role_id);
+    const rolePaid = await getOneRole(userPaid.role_id);
+    const data = paymentDto(payment, user, userPaid, role, rolePaid);
     res.status(200).json(data);
   } catch (error) {
     console.error(error);
@@ -59,7 +67,9 @@ const post_one_payment = async (req, res) => {
     const payment = await getOnePayment(newPayment.id);
     const user = await getOneUser(newPayment.user_id);
     const user_paid = await getOneUser(newPayment.user_paid_id);
-    const data = paymentDto(payment, user, user_paid);
+    const role = await getOneRole(user.role_id);
+    const rolePaid = await getOneRole(user_paid.role_id);
+    const data = paymentDto(payment, user, user_paid, role, rolePaid);
     res.status(201).json(data);
   } catch (error) {
     console.error(error);
@@ -76,7 +86,9 @@ const update_payment = async (req, res) => {
     const payment = await getOnePayment(updatedPayment.id);
     const user = await getOneUser(updatedPayment.user_id);
     const user_paid = await getOneUser(updatedPayment.user_paid_id);
-    const data = paymentDto(payment, user, user_paid);
+    const role = await getOneRole(user.role_id);
+    const rolePaid = await getOneRole(user_paid.role_id);
+    const data = paymentDto(payment, user, user_paid, role, rolePaid);
     res.status(201).json(data);
   } catch (error) {
     console.error(error);
@@ -96,10 +108,23 @@ const delete_payment = async (req, res) => {
   }
 };
 
+
+const get_payments_by_currencies = async (req, res) => {
+  try {
+    const currencies = await getPaymentsByCurrencies();
+    const data = currenciesDto(currencies)
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
 module.exports = {
     get_all_payments,
     get_one_payment,
     post_one_payment,
     update_payment,
-    delete_payment
+    delete_payment,
+    get_payments_by_currencies
 }

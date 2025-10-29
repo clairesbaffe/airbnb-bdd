@@ -65,11 +65,65 @@ const deleteUser = async (user_id) => {
     }
 }
 
+
+const getTopUsersContracts = async (limit = 5) => {
+  return await db.any(
+    `
+    SELECT
+      u.id AS user_id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      u.phone_number,
+      u.role_id,
+      COUNT(c.id) AS total_contracts
+    FROM users u
+    LEFT JOIN contracts c
+      ON u.id = c.contractor_user_id
+    GROUP BY u.id, u.first_name, u.last_name, u.email
+    ORDER BY total_contracts DESC
+    LIMIT ${limit};
+    `,
+    {
+        limit: limit
+    }
+  );
+};
+
+
+
+const getTopUsersClients = async (limit = 5) => {
+  return await db.any(
+    `
+    SELECT
+      u.id AS user_id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      u.phone_number,
+      u.role_id,
+      COUNT(c.id) AS total_contracts
+    FROM users u
+    LEFT JOIN contracts c
+      ON u.id = c.client_user_id
+    GROUP BY u.id, u.first_name, u.last_name, u.email
+    ORDER BY total_contracts DESC
+    LIMIT ${limit};
+    `,
+    {
+        limit: limit
+    }
+  );
+};
+
+
 module.exports = {
     getAllUsers,
     getOneUser,
     postUser,
     updateUser,
     deleteUser,
-    updateUserRole
+    updateUserRole,
+    getTopUsersContracts,
+    getTopUsersClients
 }

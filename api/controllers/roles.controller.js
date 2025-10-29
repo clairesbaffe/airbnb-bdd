@@ -3,7 +3,8 @@ const {
     getOneRole,
     postRole,
     updateRole,
-    deleteRole
+    deleteRole,
+    getNumberUsersByRole
  } = require("../services/roles.service");
 
  const {
@@ -79,10 +80,21 @@ const delete_role = async (req, res) => {
 };
 
 
+const get_number_user_by_role = async (req, res) => {
+  try {
+    const number = await getNumberUsersByRole();
+    res.status(200).json(number);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
 module.exports = {
     get_all_roles,
     get_one_role,
     post_one_role,
     update_role,
-    delete_role
+    delete_role,
+    get_number_user_by_role
 }
