@@ -99,8 +99,9 @@ const add_offer = async (req, res) => {
     const offer = req.query.offer;
 
     await addOffer(adId, offer);
+    const ad = await getAdById(adId);
 
-    res.status(200).json();
+    res.status(200).json(ad);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erreur serveur" });
@@ -113,8 +114,9 @@ const remove_offer = async (req, res) => {
     const offer = req.query.offer;
 
     await removeOffer(adId, offer);
+    const ad = await getAdById(adId);
 
-    res.status(200).json();
+    res.status(200).json(ad);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erreur serveur" });
