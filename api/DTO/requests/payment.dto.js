@@ -1,6 +1,5 @@
 const createPaymentDto = (data) => {
   return {
-    id: data.id,
     total: data.total,
     date: data.date,
     status: data.status,
@@ -13,7 +12,6 @@ const createPaymentDto = (data) => {
 
 const updatePaymentDto = (data) => {
   return {
-    id: data.id,
     total: data.total,
     date: data.date,
     status: data.status,
