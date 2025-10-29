@@ -1,6 +1,7 @@
 ## Membres du groupe
 
 Nom/prénom : Saint-Marc Maimiti
+
 Nom/prénom : Sbaffe Claire
 
 ---
@@ -78,7 +79,7 @@ CREATE TABLE contracts (
     id SERIAL PRIMARY KEY,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     content TEXT,
-    ad_id TEXT,
+    ad_id TEXT, ---on met l'id de l'annonce stockée en mongodb
     contractor_user_id INTEGER NOT NULL,
     client_user_id INTEGER NOT NULL,
     CONSTRAINT fk_contracts_contractor FOREIGN KEY (contractor_user_id)
@@ -177,7 +178,20 @@ db.ratings.insertMany([
 **PostgreSQL**
 
 ```sql
--- Exemple de requête avec jointure et agrégat
+SELECT
+      u.id AS user_id,
+      u.first_name,
+      u.last_name,
+      u.email,
+      u.phone_number,
+      u.role_id,
+      COUNT(c.id) AS total_contracts
+    FROM users u
+    LEFT JOIN contracts c
+      ON u.id = c.client_user_id
+    GROUP BY u.id, u.first_name, u.last_name, u.email
+    ORDER BY total_contracts DESC
+    LIMIT ${limit};
 ```
 
 **MongoDB**
@@ -212,9 +226,12 @@ const searchAds = async (offersCriteria, maxPrice) => {
 
 ### 6. Stratégie de Sauvegarde
 
-Pour cette partie, vous devez effectuer des recherches afin d'argumenter vos réponses.
+- **PostgreSQL** : `pg_dump` peut être utilisé pour dump un fichier sql, il est facile d'utilisation mais devient plus lent sur de plus grosses bases. Il est préférable d'utiliser pg_dump sur des environnements de développement. Pour la production, on peut utiliser `pg_basebackup` qui va faire du PITR (point in time recovery), il va faire une copie du cluster à un instant T, puis on pourra revenir à cet état en cas de problème. On peut également utiliser du WAL (write ahead log) qui fait en sorte que chaque requête soit mise en log avant d'être effectuée, ainsi on saura que c'est la dernière requête insérée dans les logs qui a fait planter le cluster ou la base.
 
-- **PostgreSQL** : Méthode proposée (pg_dump, sauvegarde continue, etc.)
-- **MongoDB** : Méthode proposée (mongodump, replica set, etc.)
-- **Fréquence** : Complète, incrémentale, différentielle
-- **Restauration** : Procédure en cas de perte de données
+- **MongoDB** : Les dump de BSON sont la procédure la plus simple mais c'est surtout utilisable sur de petites bases ou simplement pour de la restauration d'objets. On peut également faire des réplicas de la base nous aurons ainsi au moins deux instances de la base, faisant que si la base principale tombe, on basculera directement sur la réplique de la base avant qu'elle ne tembe en panne. Les solutions comme MongoDB Atlas permettent aussi des sauvegardes continues et la restauration PITR grâce à l’exploitation de l’oplog (journal des opérations).
+
+- **Fréquence** : Dans le cas de la production, il est préférable de faire des sauvegardes complètes hebdomadaires voire quotidiennes selon la taille de la base, afin de ne risquer aucune perte de données accidentelle ou malveillante. Dans le cas de l'environnement de développement, on peut faire des sauvegardes moins fréquentes, incrémentales ou décrémentielles (avec l'outil pgBackRest par exemple), elles permettent de réduire l’espace disque et le temps de sauvegarde. Dans le cas de réplicas sur MongoDB, les données sont sauvegardées quasiment instantanément. Il est tout de même préférable de faire des dump réguliers.
+
+- **Restauration** :
+Pour pgsql, on peut tout simplement restaurer une sauvegarde avec un fichier sql issu d'un `pg_dump` avec la commande `pg_restore` dans une nouvelle base vide. Pour faire du PITR, on peut rejouer les fichiers WAL, des fichiers logs des requêtes effectuées.
+Pour MongoDB, on peut faire la commande `mongorestore` qui va restaurer la base à partir d'un fichier dump en BSON. Dans le cas d'un réplica set, si un noeud tombe, le système bascule directement et automatiquement sur un autre noeud, on pourra donc restaurer le noeud en panne avec les dump effectués sans avoir de coupure. Enfin, on peut également faire du PITR en rejouant le fichier de logs oplog qui remettra la base dans l'état avant sa panne.
