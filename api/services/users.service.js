@@ -34,9 +34,31 @@ const updateUser = async (userData, user_id) => {
         );
 }
 
+
+const deleteUser = async (user_id) => {
+    try {
+        const userToDelete = await db.oneOrNone(
+                                'SELECT * FROM users WHERE id=${id}',
+                                {id: user_id}
+                            );
+        
+        if (!userToDelete) {
+            throw(new Error("The user doesn't exist"))
+        }
+        await db.none(
+            'DELETE FROM users WHERE id=${id}',
+            {id: user_id}
+        );
+        return {"message": "user deleted"}
+    } catch (e) {
+        throw e
+    }
+}
+
 module.exports = {
     getAllUsers,
     getOneUser,
     postUser,
-    updateUser
+    updateUser,
+    deleteUser
 }
