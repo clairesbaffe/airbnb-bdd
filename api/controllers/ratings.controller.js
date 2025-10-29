@@ -1,5 +1,10 @@
-const { getAllRatings, getRatingById } = require("../services/ratings.service");
+const {
+  getAllRatings,
+  getRatingById,
+  insertRating,
+} = require("../services/ratings.service");
 const { ratingsDto, ratingDto } = require("../DTO/response/rating.dto");
+const { insertRatingDto } = require("../DTO/requests/rating.dto");
 
 const get_all_ratings = async (req, res) => {
   try {
@@ -24,7 +29,23 @@ const get_rating_by_id = async (req, res) => {
   }
 };
 
+const insert_rating = async (req, res) => {
+  try {
+    const ratingData = insertRatingDto(req.body);
+
+    const insertedId = await insertRating(ratingData);
+    const rating = await getRatingById(insertedId);
+
+    const data = ratingDto(rating);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
 module.exports = {
   get_all_ratings,
   get_rating_by_id,
+  insert_rating,
 };
