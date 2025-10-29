@@ -41,7 +41,7 @@ const deleteUser = async (user_id) => {
                                 'SELECT * FROM users WHERE id=${id}',
                                 {id: user_id}
                             );
-        
+
         if (!userToDelete) {
             throw(new Error("The user doesn't exist"))
         }
