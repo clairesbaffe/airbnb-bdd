@@ -112,6 +112,42 @@ const updateAdRating = async (adId, newRating) => {
   }
 };
 
+const addOffer = async (adId, offer) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    await db.collection("ads").updateOne(
+      { _id: new ObjectId(adId) },
+      {
+        $set: { updatedAt: new Date() },
+        $push: { "specifications.offers": { $each: [String(offer)] } },
+      }
+    );
+  } finally {
+    await client.close();
+  }
+};
+
+const removeOffer = async (adId, offer) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    await db.collection("ads").updateOne(
+      { _id: new ObjectId(adId) },
+      {
+        $set: { updatedAt: new Date() },
+        $pull: { "specifications.offers": offer },
+      }
+    );
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   getAllAds,
   getAdById,
@@ -119,4 +155,6 @@ module.exports = {
   updateAd,
   deleteAdById,
   updateAdRating,
+  addOffer,
+  removeOffer,
 };
