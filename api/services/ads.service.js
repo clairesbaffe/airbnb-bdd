@@ -148,6 +148,32 @@ const removeOffer = async (adId, offer) => {
   }
 };
 
+const searchAds = async (offersCriteria, maxPrice) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    let query = [];
+
+    if (maxPrice) {
+      query.push({ $match: { price: { $lt: Number(maxPrice) } } });
+    }
+
+    if (offersCriteria && offersCriteria.length > 0) {
+      query.push({
+        $match: { "specifications.offers": { $all: offersCriteria } },
+      });
+    }
+
+    const ads = await db.collection("ads").aggregate(query).toArray();
+
+    return ads;
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   getAllAds,
   getAdById,
@@ -157,4 +183,5 @@ module.exports = {
   updateAdRating,
   addOffer,
   removeOffer,
+  searchAds,
 };

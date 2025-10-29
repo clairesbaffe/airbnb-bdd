@@ -9,9 +9,11 @@ const {
   delete_ad_by_id,
   add_offer,
   remove_offer,
+  search_ads,
 } = require("../controllers/ads.controller");
 
 router.get("/", get_all_ads);
+router.get("/search/", search_ads);
 router.get("/:adId", get_ad_by_id);
 router.post("/", insert_ad);
 router.patch("/:adId", update_ad);
