@@ -8,6 +8,13 @@ const insertRatingDto = (data) => {
   };
 };
 
+const updateRatingDto = (data) => {
+  return {
+    rating: data.rating,
+  };
+};
+
 module.exports = {
   insertRatingDto,
+  updateRatingDto,
 };

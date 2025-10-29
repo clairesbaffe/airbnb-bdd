@@ -51,8 +51,23 @@ const insertRating = async (ratingData) => {
   }
 };
 
+const updateRating = async (ratingId, ratingData) => {
+  const client = new MongoClient(mongoUri);
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+
+    await db
+      .collection("ratings")
+      .updateOne({ _id: new ObjectId(ratingId) }, { $set: { ...ratingData } });
+  } finally {
+    await client.close();
+  }
+};
+
 module.exports = {
   getAllRatings,
   getRatingById,
   insertRating,
+  updateRating,
 };
