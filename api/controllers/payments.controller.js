@@ -1,12 +1,16 @@
 const {
     getAllPayments,
-    getOnePayment
+    getOnePayment,
+    postPayment,
+    updatePayment
  } = require("../services/payments.service");
  const {getOneUser} = require("../services/users.service");
 
+ const {paymentDto} = require("../DTO/response/payment.dto")
  const {
-    paymentDto
- } = require("../DTO/response/payment.dto")
+    createPaymentDto,
+    updatePaymentDto
+ } = require("../DTO/requests/payment.dto");
 
 
 const get_all_payments = async (req, res) => {
@@ -46,7 +50,43 @@ const get_one_payment = async (req, res) => {
   }
 };
 
+
+const post_one_payment = async (req, res) => {
+  try {
+    const paymentData = createPaymentDto(req.body);
+    const newPayment = await postPayment(paymentData)
+    const payment = await getOnePayment(newPayment.id);
+    const user = await getOneUser(newPayment.user_id);
+    const user_paid = await getOneUser(newPayment.user_paid_id);
+    const data = paymentDto(payment, user, user_paid);
+    res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
+const update_payment = async (req, res) => {
+  try {
+    const payment_id = parseInt(req.params.payment_id);
+    const paymentData = updatePaymentDto(req.body);
+    const updatedPayment = await updatePayment(paymentData, payment_id)
+    const payment = await getOnePayment(updatedPayment.id);
+    const user = await getOneUser(updatedPayment.user_id);
+    const user_paid = await getOneUser(updatedPayment.user_paid_id);
+    const data = paymentDto(payment, user, user_paid);
+    res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
+
 module.exports = {
     get_all_payments,
-    get_one_payment
+    get_one_payment,
+    post_one_payment,
+    update_payment
 }
