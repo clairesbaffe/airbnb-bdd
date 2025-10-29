@@ -34,6 +34,16 @@ const updateUser = async (userData, user_id) => {
         );
 }
 
+const updateUserRole = async (role_id, user_id) => {
+        return await db.one(
+            'UPDATE users SET role_id=${role_id} WHERE id=${id} RETURNING *',
+            {
+                role_id: role_id,
+                id: user_id
+            }
+        );
+}
+
 
 const deleteUser = async (user_id) => {
     try {
@@ -60,5 +70,6 @@ module.exports = {
     getOneUser,
     postUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserRole
 }
