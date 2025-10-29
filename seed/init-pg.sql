@@ -6,6 +6,12 @@ CREATE TABLE roles (
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
+INSERT INTO roles (name) VALUES
+('Admin'),
+('User'),
+('Host'),
+('Guest');
+
 -- =======================================
 -- TABLE: users
 -- =======================================
@@ -22,6 +28,12 @@ CREATE TABLE users (
         ON DELETE RESTRICT
 );
 
+INSERT INTO users (last_name, first_name, email, phone_number, role_id) VALUES
+('Dupont','Alice','alice@example.com','0600000001',1),
+('Martin','Bob','bob@example.com','0600000002',2),
+('Durand','Chloe','chloe@example.com','0600000003',3),
+('Petit','David','david@example.com','0600000004',4);
+
 -- =======================================
 -- TABLE: payments
 -- =======================================
@@ -37,6 +49,11 @@ CREATE TABLE payments (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
+
+INSERT INTO payments (total, status, currency, user_id) VALUES
+(120.50,'completed','EUR',2),
+(250.00,'pending','EUR',4),
+(75.20,'failed','EUR',3);
 
 -- =======================================
 -- TABLE: contracts
@@ -57,3 +74,7 @@ CREATE TABLE contracts (
         ON UPDATE CASCADE
         ON DELETE RESTRICT
 );
+
+INSERT INTO contracts (content, ad_id, contractor_user_id, client_user_id) VALUES
+('Location appartement T3 centre-ville','651a1fabc9a1d9337a123456',3,4),
+('Location studio étudiant','651a1fabcd12d9337a654321',3,2);
