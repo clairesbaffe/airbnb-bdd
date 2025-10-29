@@ -7,7 +7,7 @@ Nom/prénom : Sbaffe Claire
 
 ### 1. Présentation du Projet
 
-Décrivez votre application en 3-5 phrases : problématique, objectif et fonctionnalités principales.
+Notre application est du type Airbnb pour la location de logements. Elle gère à la fois les utilisateurs, leurs contrats, leur factures et les annonces et commentaires sur les logements.
 
 ### 2. Architecture PostgreSQL (Méthode Merise)
 
@@ -164,8 +164,13 @@ db.ratings.insertMany([
 ### 4. Justification des Choix Techniques
 
 - **Répartition des données** : Quelles données en PostgreSQL ? Quelles données en MongoDB ? Pourquoi ?
+  - Les utilisateurs, les roles, les factures et les contrats sont dans la base PostgreSQL car ces données sont vitales à l'application et ont besoin d'être intègre à tout moment.
+  - Dans la base MongoDB, on a les annonces, les commentaires et les notes, car ces données ne sont pas vitales à l'application (elles peuvent toujours être recréées), et si les données ne sont pas parfaitement intègres instantanément, ce n'est pas grave, du moment qu'on a une réponse.
 - **Modélisation MongoDB** : Documents imbriqués ou références ? Justification
+  - Les documents sont référencés car il peut y avoir potentiellement des centaines ou des milliers de notes et commentaires sur une même annonce. On briserait alors le plafond des 16Mo par document. De plus, annonces et commentaires ne sont pas systématiquement récupérés ensemble, utiliser des documents imbriqués ici ferait perdre de la performance inutilement.
+  - D'un autre côté, les offers (les appareils que propose le logement par exemple) et les images sont stockées dans des tableaux, car ce ne sont pas des objets énormes (seulement des strings), et il ne devraient pas y en avoir beaucoup (pas plus de 15 par exemple, on peut mettre une limite, mais ça devrait suffire).
 - **Relations inter-bases** : Comment les deux bases communiquent-elles ?
+  - Les deux bases communiquent par intermédiaire de l'API. Par exemple, si on veut afficher le profil d'un utilisateur avec ses annonces publiées, on récupère l'utilisateur dans la base PostgreSQL, puis avec le même ID utilisateur, on récupère les annonces de cet utilisateur.
 
 ### 5. Exemples de Requêtes Complexes
 
