@@ -1,7 +1,7 @@
 const db = require("../database/db")
 
 const getAllUsers = async () => {
-    return await db.any("SELECT * FROM users");
+    return await db.any("SELECT * FROM users ORDER BY id ASC");
 }
 
 const getOneUser = async (user_id) =>{
@@ -23,14 +23,13 @@ const postUser = async (userData) => {
 
 const updateUser = async (userData, user_id) => {
         return await db.one(
-            'UPDATE users SET last_name=${last_name}, first_name=${first_name}, email=${email}, phone_number=${phone_number}, role_id=${role_id} WHERE id=${id} RETURNING *',
+            'UPDATE users SET last_name=${last_name}, first_name=${first_name}, email=${email}, phone_number=${phone_number} WHERE id=${id} RETURNING *',
             {
                 last_name: userData.last_name,
                 first_name: userData.first_name,
                 email: userData.email,
                 phone_number: userData.phone_number,
-                role_id: userData.role_id,
-                id:user_id
+                id: user_id
             }
         );
 }
