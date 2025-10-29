@@ -1,7 +1,11 @@
+require('dotenv').config();
+
+// const MongoClient = require('mongodb').MongoClient
+
 const express = require("express");
 const app = express();
-const hostname = "127.0.0.1";
-const port = 3000;
+const hostname = process.env.HOST;
+const port = process.env.PORT;
 
 app.use(express.json());
 
@@ -13,3 +17,23 @@ app.listen(port, hostname, () => {
   console.log(`Serveur démarré sur le http://${hostname}:${port}`);
 });
 
+// db.one("SELECT $1 AS value", 123)
+//   .then((data) => {
+//     console.log("DATA:", data.value);
+//   })
+//   .catch((error) => {
+//     console.log("ERROR:", error);
+//   });
+
+
+// MongoClient.connect('mongodb://airbnb-mongodb:27017/animals', (err, client) => {
+//   if (err) throw err
+
+//   const db = client.db('animals')
+
+//   db.collection('mammals').find().toArray((err, result) => {
+//     if (err) throw err
+
+//     console.log(result)
+//   })
+// })
