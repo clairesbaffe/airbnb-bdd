@@ -3,7 +3,8 @@ const {
     getOneContract,
     postContract,
     updateContract,
-    deleteContract
+    deleteContract,
+    getAdContracts
  } = require("../services/contracts.service");
 const {getOneUser} = require("../services/users.service");
 const {getOneRole} = require("../services/roles.service");
@@ -14,8 +15,28 @@ const { contractDto } = require("../DTO/response/contract.dto");
 const get_all_contracts = async (req, res) => {
   try {
     const contracts = await getAllContracts();
+    const data = [];
+    for (const contract of contracts) {
+        const contractor = await getOneUser(contract.contractor_user_id);
+        const client = await getOneUser(contract.client_user_id);
+        const contractor_role = await getOneRole(contractor.role_id);
+        const client_role = await getOneRole(client.role_id);
+        data.push(
+            contractDto(contract, contractor, client, contractor_role, client_role)
+        )
+    };
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
 
 
+const get_ad_contracts = async (req, res) => {
+  try {
+    const ad_id = req.params.ad_id;
+    const contracts = await getAdContracts(ad_id);
     const data = [];
     for (const contract of contracts) {
         const contractor = await getOneUser(contract.contractor_user_id);
@@ -106,5 +127,6 @@ module.exports = {
     get_one_contract,
     post_one_contract,
     update_contract,
-    delete_contract
+    delete_contract,
+    get_ad_contracts
 }

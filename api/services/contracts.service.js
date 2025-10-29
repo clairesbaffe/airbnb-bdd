@@ -8,6 +8,11 @@ const getOneContract = async (contract_id) =>{
     return await db.one('SELECT * from contracts WHERE id = $1', contract_id);
 }
 
+const getAdContracts = async (ad_id) =>{
+    return await db.any('SELECT * from contracts WHERE ad_id = $1', ad_id);
+}
+
+
 const postContract = async (contractData) => {
         return await db.one(
             'INSERT INTO contracts(date, content, ad_id, contractor_user_id, client_user_id) VALUES(${date}, ${content}, ${ad_id}, ${contractor_user_id}, ${client_user_id}) RETURNING *',
@@ -62,5 +67,6 @@ module.exports = {
     getOneContract,
     postContract,
     updateContract,
-    deleteContract
+    deleteContract,
+    getAdContracts
 };
